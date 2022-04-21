@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "438063101852",
+    "project_id": "highin-e8645",
+    "storage_bucket": "highin-e8645.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:438063101852:android:ad9c9035fdaccbc74eba59",
+        "android_client_info": {
+          "package_name": "com.example.highin_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "438063101852-a438g6ef3najsaocmms14cvtfoj8iphd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwxF3-ncPIoTZnTJETo3EaxSYkpvlM5YA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "438063101852-a438g6ef3najsaocmms14cvtfoj8iphd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,12 +4,12 @@ import 'package:provider/provider.dart';
 import '../provider/google_sign_in.dart';
 
 class LoggedInWidget extends StatelessWidget {
-  final user = FirebaseAuth.instance.currentUser!;
-
   LoggedInWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser!;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Logged In'),
@@ -34,6 +34,9 @@ class LoggedInWidget extends StatelessWidget {
               Text(
                 user.displayName!,
                 style: const TextStyle(fontSize: 24),
+              ),
+              SizedBox(
+                height: 32,
               ),
             ],
           ),

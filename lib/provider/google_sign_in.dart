@@ -3,17 +3,21 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class GoogleSignInProvider extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
+
+  GoogleSignInAccount? _user;
+  GoogleSignInAccount get user => _user!;
 
   Future googleLogin() async {
     final googleUser = await googleSignIn.signIn();
 
     /// If User doesn't select any account
     if (googleUser == null) return;
-
+    _user = googleUser;
     var email = googleUser.email;
 
     ///  Check the existence

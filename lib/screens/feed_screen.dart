@@ -1,3 +1,4 @@
+// import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:highin_app/models/post.dart';
 import 'package:highin_app/models/user.dart';
+import 'package:highin_app/widgets/post_card.dart';
+import 'package:highin_app/utils/global_variables.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -42,8 +45,10 @@ class _FeedScreenState extends State<FeedScreen> {
           }
 
           return ListView.builder(
-            itemCount: snapshot.data!.docs.length,
-            itemBuilder: (context, index) => PostCard(),
+            // itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) => PostCard(
+              // snap: snapshot.data!.docs[index].data(),
+            ),
           );
         },
       ),

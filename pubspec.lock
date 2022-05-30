@@ -57,6 +57,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.6.15"
+  cloud_functions:
+    dependency: "direct main"
+    description:
+      name: cloud_functions
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.15"
+  cloud_functions_platform_interface:
+    dependency: transitive
+    description:
+      name: cloud_functions_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.1.6"
+  cloud_functions_web:
+    dependency: transitive
+    description:
+      name: cloud_functions_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.2.14"
   collection:
     dependency: transitive
     description:
@@ -149,26 +170,26 @@ packages:
     source: hosted
     version: "1.6.4"
   firebase_storage:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: firebase_storage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "10.2.17"
+    version: "10.2.16"
   firebase_storage_platform_interface:
     dependency: transitive
     description:
       name: firebase_storage_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.1.7"
+    version: "4.1.6"
   firebase_storage_web:
     dependency: transitive
     description:
       name: firebase_storage_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.16"
+    version: "3.2.15"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -189,7 +210,7 @@ packages:
     source: hosted
     version: "2.0.6"
   flutter_svg:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.dartlang.org"

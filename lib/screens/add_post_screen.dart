@@ -1,13 +1,17 @@
+// import 'dart:html';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:highin_app/resources/firestore_method.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:highin_app/utils/utils.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';	
 import 'package:http/http.dart' as http;
+
 
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({Key? key}) : super(key: key);
@@ -22,47 +26,82 @@ class _AddPostScreenState extends State<AddPostScreen> {
   bool _isLoading = false;
 
   //function for posting image to firebase
-  void postImage(String uid, String username, String profImage) async{
+  void postImage(
+    String uid,
+    String username,
+    String profImage,
+  ) async {
     setState(() {
       _isLoading = true;
     });
-    String photoUrl = await getUrl(uid);
-    String postId = const Uuid().v1();
-    Map map = {
-      "description": _descriptionController.text,
-      "uid": uid,
-      "username": username,
-      "postId": postId,
-      "datePublished": "${DateTime.now()}",
-      "postUrl": photoUrl,
-      "profImage": profImage,
-      "likes": jsonEncode([]),
-    };
-    final res = await http.post(
-        Uri.parse(
-            "https://us-central1-highin-e8645.cloudfunctions.net/uploadUserPostDataToFirebase"),
-        body: map);
-    if(res.statusCode == 201){
-      setState(() {
-        _isLoading = false;
-      });
-      showSnackBar(context, "Posted");
-      setState(() {
-        _file = null;
-      });
-    }else{
-      showSnackBar(context, "Some error occured");
-    }
+
+    // ------------------------------------------------------------------------------------------------------------
+    //  TRYING SOMETHING
+    // ------------------------------------------------------------------------------------------------------------
+
+    String photoUrl = await getUrl(uid);	
+    String postId = const Uuid().v1();	
+    Map map = {	
+      "description": _descriptionController.text,	
+      "uid": uid,	
+      "username": username,	
+      "postId": postId,	
+      "datePublished": "${DateTime.now()}",	
+      "postUrl": photoUrl,	
+      "profImage": profImage,	
+      "likes": jsonEncode([]),	
+    };	
+    final res = await http.post(	
+        Uri.parse(	
+            "https://us-central1-highin-e8645.cloudfunctions.net/uploadUserPostDataToFirebase"),	
+        body: map);	
+    if(res.statusCode == 201){	
+      setState(() {	
+        _isLoading = false;	
+      });	
+      showSnackBar(context, "Posted");	
+      setState(() {	
+        _file = null;	
+      });	
+    }else{	
+      showSnackBar(context, "Some error occured");	
+    }	
+  }
+Future<String> getUrl(String uid) async{	
+    String postId = const Uuid().v1();	
+    Reference ref = FirebaseStorage.instance.ref().child("posts").child(uid).child(postId);	
+    UploadTask task = ref.putData(_file!);	
+    TaskSnapshot snap = await task;	
+    String url = await snap.ref.getDownloadURL();	
+    return url;	
   }
 
-  Future<String> getUrl(String uid) async{
-    String postId = const Uuid().v1();
-    Reference ref = FirebaseStorage.instance.ref().child("posts").child(uid).child(postId);
-    UploadTask task = ref.putData(_file!);
-    TaskSnapshot snap = await task;
-    String url = await snap.ref.getDownloadURL();
-    return url;
-  }
+  //   try {
+  //     String res = await FirestoreMethods().uploadPost(
+  //         _descriptionController.text, _file!, uid, username, profImage);
+
+  //     if (res == "success") {
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //       showSnackBar(
+  //         context,
+  //         'Posted!',
+  //       );
+  //       clearImage();
+  //     } else {
+  //       showSnackBar(context, res);
+  //     }
+  //   } catch (err) {
+  //     setState(() {
+  //       _isLoading = false;
+  //     });
+  //     showSnackBar(
+  //       context,
+  //       err.toString(),
+  //     );
+  //   }
+  // }
 
   _selectImage(BuildContext context) async {
     return showDialog(
@@ -109,11 +148,17 @@ class _AddPostScreenState extends State<AddPostScreen> {
         });
   }
 
+  void clearImage() {
+    setState(() {
+      _file = null;
+    });
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _descriptionController.dispose();  
+    _descriptionController.dispose();
   }
 
   @override
@@ -133,13 +178,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
               backgroundColor: mobileBackgroundColor,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () {},
+                onPressed: clearImage,
               ),
               title: const Text('Post to'),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () => postImage(user.uid, user.displayName!, user.photoURL!),
+                  onPressed: () =>
+                      postImage(user.uid, user.displayName!, user.photoURL!),
                   child: const Text(
                     'Post',
                     style: TextStyle(
@@ -152,7 +198,11 @@ class _AddPostScreenState extends State<AddPostScreen> {
               ],
             ),
             body: Column(children: [
-              _isLoading ? const LinearProgressIndicator() : const Padding(padding: EdgeInsets.only(top: 0),),
+              _isLoading
+                  ? const LinearProgressIndicator()
+                  : const Padding(
+                      padding: EdgeInsets.only(top: 0),
+                    ),
               const Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

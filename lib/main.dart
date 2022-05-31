@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:highin_app/provider/google_sign_in.dart';
-import 'package:highin_app/screens/home/home.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -10,8 +9,6 @@ import 'package:highin_app/responsive/mobile_layout_screen.dart';
 import 'package:highin_app/responsive/web_layout_screen.dart';
 import 'package:highin_app/responsive/responsive_layout_screen.dart';
 import 'package:highin_app/screens/login/login.dart';
-
-
 
 
 void main() async {

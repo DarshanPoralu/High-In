@@ -1,8 +1,14 @@
+// import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:highin_app/widgets/post_card.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:highin_app/models/post.dart';
+import 'package:highin_app/models/user.dart';
+import 'package:highin_app/widgets/post_card.dart';
+import 'package:highin_app/utils/global_variables.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({Key? key}) : super(key: key);
@@ -12,7 +18,6 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,11 +34,10 @@ class _FeedScreenState extends State<FeedScreen> {
               ),
             )
           ]),
-
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection("posts").snapshots(),
         builder: (context,
-            AsyncSnapshot<dynamic> snapshot) {
+          AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),

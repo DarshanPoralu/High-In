@@ -1,15 +1,26 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:highin_app/screens/comments_screen.dart';
 import 'package:highin_app/utils/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:highin_app/models/user.dart' as model;
+import 'package:highin_app/resources/firestore_method.dart';
+import 'package:highin_app/utils/colors.dart';
+import 'package:highin_app/utils/global_variables.dart';
+import 'package:highin_app/utils/utils.dart';
 import 'package:highin_app/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 class PostCard extends StatefulWidget {
   final snap;
   const PostCard({
-    Key? key, required this.snap,
+    Key? key,
+    required this.snap,
   }) : super(key: key);
 
   @override
@@ -19,22 +30,17 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final user = FirebaseAuth.instance.currentUser!;
   bool isLikeAnimating = false;
-
-  Future<void> likePost(String postId, String uid, List likes) async{
-    if(likes.contains(uid)) {
+  Future<void> likePost(String postId, String uid, List likes) async {
+    if (likes.contains(uid)) {
       likes.remove(uid);
-    } else{
+    } else {
       likes.add(uid);
     }
-    Map map = {
-      'postId': postId,
-      'uid': uid,
-      'likes': jsonEncode(likes)
-    };
+    Map map = {'postId': postId, 'uid': uid, 'likes': jsonEncode(likes)};
     await http.post(
-    Uri.parse(
-    "https://us-central1-highin-e8645.cloudfunctions.net/updateLikePost"),
-    body: map);
+        Uri.parse(
+            "https://us-central1-highin-e8645.cloudfunctions.net/updateLikePost"),
+        body: map);
   }
 
   @override
@@ -49,11 +55,12 @@ class _PostCardState extends State<PostCard> {
                 .copyWith(right: 0),
             child: Row(
               children: [
-                 CircleAvatar(
+                CircleAvatar(
                   radius: 16,
                   backgroundImage: NetworkImage(
-                      widget.snap['profImage'],
-                ),),
+                    widget.snap['profImage'],
+                  ),
+                ),
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.only(left: 8),
@@ -105,8 +112,9 @@ class _PostCardState extends State<PostCard> {
 
           // IMAGE SELECTION
           GestureDetector(
-            onDoubleTap: () async{
-              await likePost(widget.snap['postId'], user.uid, jsonDecode(widget.snap['likes']));
+            onDoubleTap: () async {
+              await likePost(widget.snap['postId'], user.uid,
+                  jsonDecode(widget.snap['likes']));
               setState(() {
                 isLikeAnimating = true;
               });
@@ -117,9 +125,8 @@ class _PostCardState extends State<PostCard> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.35,
                   width: double.infinity,
-                  child: Image.network(
-                      widget.snap['postUrl'],
-                      fit: BoxFit.cover),
+                  child:
+                      Image.network(widget.snap['postUrl'], fit: BoxFit.cover),
                 ),
                 AnimatedOpacity(
                   duration: const Duration(milliseconds: 200),
@@ -137,7 +144,7 @@ class _PostCardState extends State<PostCard> {
                     child: const Icon(Icons.favorite,
                         color: Colors.white, size: 100),
                   ),
-                ),
+                )
               ],
             ),
           ),
@@ -145,22 +152,30 @@ class _PostCardState extends State<PostCard> {
           Row(
             children: [
               LikeAnimation(
-                isAnimating: jsonDecode(widget.snap['likes']).contains(user.uid), //Later add the snap thing--------------------------------------------------------
+                isAnimating: jsonDecode(widget.snap['likes']).contains(user
+                    .uid), //Later add the snap thing--------------------------------------------------------
                 smallLike: true,
                 child: IconButton(
-                  onPressed: () async{
-                    await likePost(widget.snap['postId'], user.uid, jsonDecode(widget.snap['likes']));
+                  onPressed: () async {
+                    await likePost(widget.snap['postId'], user.uid,
+                        jsonDecode(widget.snap['likes']));
                   },
-                  icon: jsonDecode(widget.snap['likes']).contains(user.uid) ? const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ) : const Icon(
-                    Icons.favorite_border,
-                  ), // Icon
+                  icon: jsonDecode(widget.snap['likes']).contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite_border,
+                        ), // Icon
                 ),
               ), // IconButton
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CommentScreen(),
+                  ),
+                ),
                 icon: const Icon(
                   Icons.comment_outlined,
                 ), // Icon
@@ -227,12 +242,12 @@ class _PostCardState extends State<PostCard> {
                   onTap: () {},
                   child: const Text(
                     'View all 200 comments',
-                    style:
-                        TextStyle(fontSize: 16, color: secondaryColor),
+                    style: TextStyle(fontSize: 16, color: secondaryColor),
                   ),
                 ),
                 Text(
-                  DateFormat.yMMMd().format(DateTime.parse(widget.snap['datePublished'])),
+                  DateFormat.yMMMd()
+                      .format(DateTime.parse(widget.snap['datePublished'])),
                   style: const TextStyle(fontSize: 16, color: secondaryColor),
                 ),
               ],

@@ -3,21 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:highin_app/screens/comments_screen.dart';
 import 'package:highin_app/utils/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:highin_app/models/user.dart' as model;
-import 'package:highin_app/resources/firestore_method.dart';
-import 'package:highin_app/utils/colors.dart';
-import 'package:highin_app/utils/global_variables.dart';
-import 'package:highin_app/utils/utils.dart';
 import 'package:highin_app/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 
 class PostCard extends StatefulWidget {
-  final snap;
+  final Map snap;
   const PostCard({
     Key? key,
     required this.snap,
@@ -173,7 +164,7 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => CommentScreen(),
+                    builder: (context) => CommentScreen(postId: widget.snap['postId']),
                   ),
                 ),
                 icon: const Icon(

@@ -1,14 +1,49 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:highin_app/utils/colors.dart';
+import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class CommentScreen extends StatefulWidget {
-  const CommentScreen({Key? key}) : super(key: key);
+  const CommentScreen({required this.postId, Key? key}) : super(key: key);
+  final String postId;
 
   @override
   _CommentScreenState createState() => _CommentScreenState();
 }
 
 class _CommentScreenState extends State<CommentScreen> {
+
+  var userData = {};
+  final TextEditingController comment = TextEditingController();
+  final user = FirebaseAuth.instance.currentUser!;
+
+  Future<void> postComment(String postId, String text, String uid, String name, String profilePic) async {
+    try{
+      if(text.isNotEmpty){
+        String commentId = const Uuid().v1();
+        Map map = {
+          'postId': postId,
+          'profilePic': profilePic,
+          'name': name,
+          'uid': uid,
+          'text': text,
+          'commentId': commentId,
+          'datePublished': "${DateTime.now()}"
+        };
+        await http.post(
+            Uri.parse(
+                "https://us-central1-highin-e8645.cloudfunctions.net/uploadCommentDataToFirebase"),
+            body: map);
+      }
+    } catch(e){
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +63,7 @@ class _CommentScreenState extends State<CommentScreen> {
           children: [
             CircleAvatar(
               backgroundImage: NetworkImage(
-                'https://images.unsplash.com/photo-1654741675940-b0cf97d8fcf9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=1000&q=60',
+                userData['photoUrl'],
               ),
               radius: 18,
             ),
@@ -39,7 +74,8 @@ class _CommentScreenState extends State<CommentScreen> {
                   right: 8,
                 ),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: comment,
+                  decoration: const InputDecoration(
                     hintText: 'Comment as username',
                     border: InputBorder.none,
                   ),
@@ -47,7 +83,9 @@ class _CommentScreenState extends State<CommentScreen> {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () async{
+                await postComment(widget.postId,comment.text,user.uid,user.displayName!,user.photoURL!);
+              },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 child: const Text(

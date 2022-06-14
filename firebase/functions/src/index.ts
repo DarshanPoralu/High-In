@@ -43,3 +43,13 @@ export const updateLikePost = functions.https.onRequest(async (request, response
     else
         response.status(401).send();
 });
+
+// Upload Comments data to Firestore
+export const uploadCommentDataToFirebase = functions.https.onRequest(async (request, response) => {
+    const user = request.body;
+    const result = await admin.firestore().collection("posts").doc(user['postId']).collection("comments").doc(user['commentId']).set(user);
+    if(result != null)
+        response.status(201).send();
+    else
+        response.status(401).send();
+});

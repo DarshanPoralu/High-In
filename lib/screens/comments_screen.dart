@@ -15,7 +15,6 @@ class CommentScreen extends StatefulWidget {
 
 class _CommentScreenState extends State<CommentScreen> {
 
-  var userData = {};
   final TextEditingController comment = TextEditingController();
   final user = FirebaseAuth.instance.currentUser!;
 
@@ -63,7 +62,7 @@ class _CommentScreenState extends State<CommentScreen> {
           children: [
             CircleAvatar(
               backgroundImage: NetworkImage(
-                userData['photoUrl'],
+                user.photoURL!,
               ),
               radius: 18,
             ),

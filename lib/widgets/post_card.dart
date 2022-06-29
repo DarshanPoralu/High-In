@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:highin_app/screens/comments_screen.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:highin_app/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 
 class PostCard extends StatefulWidget {
@@ -21,6 +23,28 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final user = FirebaseAuth.instance.currentUser!;
   bool isLikeAnimating = false;
+  int commonLine = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  void getComments() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+
+      commonLine = snap.docs.length;
+    } catch (e) {
+      // showSnackBar(e.toString(), context);
+    }
+  }
+
   Future<void> likePost(String postId, String uid, List likes) async {
     if (likes.contains(uid)) {
       likes.remove(uid);
@@ -164,7 +188,8 @@ class _PostCardState extends State<PostCard> {
               IconButton(
                 onPressed: () => Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => CommentScreen(postId: widget.snap['postId']),
+                    builder: (context) =>
+                        CommentScreen(postId: widget.snap['postId']),
                   ),
                 ),
                 icon: const Icon(

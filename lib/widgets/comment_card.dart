@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class CommentCard extends StatelessWidget {
+class CommentCard extends StatefulWidget {
   final snap;
   const CommentCard({Key? key, required this.snap}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<CommentCard> createState() => _CommentCardState();
+}
 
+class _CommentCardState extends State<CommentCard> {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       child: Row(
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-              snap.data()['profilePic'],
+              widget.snap.data()['profilePic'],
             ),
             radius: 18,
           ),
@@ -29,11 +33,12 @@ class CommentCard extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: snap.data()['name'],
-                          style: const TextStyle(fontWeight: FontWeight.bold,)
-                        ),
+                            text: widget.snap.data()['name'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )),
                         TextSpan(
-                          text: ' ${snap.data()['text']}',
+                          text: ' ${widget.snap.data()['text']}',
                         ),
                       ],
                     ),
@@ -42,10 +47,12 @@ class CommentCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       DateFormat.yMMMd().format(
-                        snap.data()['datePublished'].toDate(),
+                        widget.snap.data()['datePublished'].toDate(),
                       ),
                       style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w400,),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   )
                 ],

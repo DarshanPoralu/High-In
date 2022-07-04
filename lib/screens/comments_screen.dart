@@ -76,7 +76,7 @@ class _CommentScreenState extends State<CommentScreen> {
           return ListView.builder(
             itemCount: (snapshot.data! as dynamic).docs.length,
             itemBuilder: (context, index) =>
-                CommentCard(snap: (snapshot.data! as dynamic).docs.length),
+                CommentCard(snap: (snapshot.data! as dynamic).docs[index]),
           );
         },
       ),
@@ -114,9 +114,10 @@ class _CommentScreenState extends State<CommentScreen> {
               onTap: () async {
                 await postComment(widget.postId, comment.text, user.uid,
                     user.displayName!, user.photoURL!);
-                // setState(() {
-                // commentEditingController.text = "";
-                // });
+
+                setState(() {
+                comment.text = "";
+                });
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),

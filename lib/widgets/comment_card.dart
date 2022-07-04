@@ -18,7 +18,7 @@ class _CommentCardState extends State<CommentCard> {
         children: [
           CircleAvatar(
             backgroundImage: NetworkImage(
-              widget.snap.data()['profilePic'],
+              widget.snap['profilePic'],
             ),
             radius: 18,
           ),
@@ -33,12 +33,12 @@ class _CommentCardState extends State<CommentCard> {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                            text: widget.snap.data()['name'],
+                            text: widget.snap['name'],
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             )),
                         TextSpan(
-                          text: ' ${widget.snap.data()['text']}',
+                          text: ' ${widget.snap['text']}',
                         ),
                       ],
                     ),
@@ -47,7 +47,7 @@ class _CommentCardState extends State<CommentCard> {
                     padding: const EdgeInsets.only(top: 4),
                     child: Text(
                       DateFormat.yMMMd().format(
-                        widget.snap.data()['datePublished'].toDate(),
+                        DateTime.parse(widget.snap['datePublished']),
                       ),
                       style: const TextStyle(
                         fontSize: 12,

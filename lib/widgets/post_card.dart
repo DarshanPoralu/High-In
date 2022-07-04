@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:highin_app/screens/comments_screen.dart';
 import 'package:highin_app/utils/colors.dart';
@@ -38,8 +37,9 @@ class _PostCardState extends State<PostCard> {
           .doc(widget.snap['postId'])
           .collection('comments')
           .get();
-
-      commonLine = snap.docs.length;
+      setState(() {
+        commonLine = snap.docs.length;
+      });
     } catch (e) {
       // showSnackBar(e.toString(), context);
     }
@@ -56,6 +56,11 @@ class _PostCardState extends State<PostCard> {
         Uri.parse(
             "https://us-central1-highin-e8645.cloudfunctions.net/updateLikePost"),
         body: map);
+  }
+
+  Future<void> deletePost(String postId) async{
+    Map map = {'postId': postId};
+    await http.post(Uri.parse("https://us-central1-highin-e8645.cloudfunctions.net/deletePostOnFirebase"),body: map);
   }
 
   @override
@@ -107,7 +112,10 @@ class _PostCardState extends State<PostCard> {
                             ]
                                 .map(
                                   (e) => InkWell(
-                                    onTap: () {},
+                                    onTap: () async{
+                                      await deletePost(widget.snap['postId']);
+                                      Navigator.pop(context);
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 12, horizontal: 16),
@@ -256,9 +264,9 @@ class _PostCardState extends State<PostCard> {
                 ),
                 InkWell(
                   onTap: () {},
-                  child: const Text(
-                    'View all 200 comments',
-                    style: TextStyle(fontSize: 16, color: secondaryColor),
+                  child: Text(
+                    'View all $commonLine comments',
+                    style: const TextStyle(fontSize: 16, color: secondaryColor),
                   ),
                 ),
                 Text(

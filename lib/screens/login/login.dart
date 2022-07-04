@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Flexible(child: Container(), flex: 2),
+              Flexible(flex: 2, child: Container()),
               SvgPicture.asset(
                 'assets/ic_instagram.svg',
                 color: primaryColor,
@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               InkWell(
                 child: Container(
-                  child: const Text('Continue Without Signing In'),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -49,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     color: blueColor,
                   ),
+                  child: const Text('Continue Without Signing In'),
                 ),
               ),
               const SizedBox(

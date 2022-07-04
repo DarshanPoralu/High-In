@@ -76,33 +76,6 @@ Future<String> getUrl(String uid) async{
     return url;	
   }
 
-  //   try {
-  //     String res = await FirestoreMethods().uploadPost(
-  //         _descriptionController.text, _file!, uid, username, profImage);
-
-  //     if (res == "success") {
-  //       setState(() {
-  //         _isLoading = false;
-  //       });
-  //       showSnackBar(
-  //         context,
-  //         'Posted!',
-  //       );
-  //       clearImage();
-  //     } else {
-  //       showSnackBar(context, res);
-  //     }
-  //   } catch (err) {
-  //     setState(() {
-  //       _isLoading = false;
-  //     });
-  //     showSnackBar(
-  //       context,
-  //       err.toString(),
-  //     );
-  //   }
-  // }
-
   _selectImage(BuildContext context) async {
     return showDialog(
         context: context,

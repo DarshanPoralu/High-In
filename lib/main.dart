@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:highin_app/provider/google_sign_in.dart';
+import 'package:highin_app/screens/feed_screen.dart';
 import 'package:highin_app/screens/home/home.dart';
 import 'package:highin_app/utils/colors.dart';
 import 'package:provider/provider.dart';
@@ -57,8 +58,11 @@ class MyApp extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             }
-
-            return const LoginScreen();
+            if(GoogleSignInProvider().user != null) {
+              return const FeedScreen();
+            }else{
+              return const LoginScreen();
+            }
           },
         ),
         ),

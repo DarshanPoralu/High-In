@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+const FieldValue = admin.firestore.FieldValue;
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault(),
@@ -18,6 +19,8 @@ admin.initializeApp({
 // Upload User Login Data To Firebase Firestore
 export const uploadUserLoginDataToFirebase = functions.https.onRequest(async (request, response) => {
     const user = request.body;
+    user['following'] = JSON.parse(user['following']);
+    user['followers'] = JSON.parse(user['followers']);
     const result = await admin.firestore().collection("users").doc(user['uid']).set(user);
     if(result != null)
         response.status(201).send();
@@ -54,4 +57,24 @@ export const uploadCommentDataToFirebase = functions.https.onRequest(async (requ
         response.status(201).send();
     else
         response.status(401).send();
+});
+
+// Delete Post
+export const deletePostOnFirebase = functions.https.onRequest(async (request, response) => {
+    const user = request.body;
+    await admin.firestore().collection("posts").doc(user['postId']).delete();
+});
+
+// Follow or Unfollow user
+export const updateFollowingOnFirebase = functions.https.onRequest(async (request, response) => {
+    const data = request.body;
+    const snap = await admin.firestore().collection("users").doc(data['uid']).get();
+    const following = snap.data()!['following'];
+    if(following.includes(data['followId'])){
+        await admin.firestore().collection("users").doc(data['followId']).update({'followers': FieldValue.arrayRemove(data['uid'])});
+        await admin.firestore().collection("users").doc(data['uid']).update({'following': FieldValue.arrayRemove(data['followId'])});
+    }else{
+       await admin.firestore().collection("users").doc(data['followId']).update({'followers': FieldValue.arrayUnion(data['uid'])});
+       await admin.firestore().collection("users").doc(data['uid']).update({'following': FieldValue.arrayUnion(data['followId'])});
+    }
 });
